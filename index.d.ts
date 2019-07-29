@@ -25,7 +25,7 @@ interface PromiseOnPendingOptions {
  *
  *       Return a singleton of any object(such as Promise, Function, Object...) corresponding to the id
  * */
-declare function any<T = any>(id: ID, defaultValue: any): T
+declare function singletonObj<T = any>(id: ID, defaultValue: any): T
 
 /**
  * @desc 保证一个 id 对应的 promise 在同一时间只存在一个，
@@ -60,4 +60,4 @@ declare function runInterval(id: ID, createFn: Fn): () => void
  * */
 declare function onceRun(fn: Fn, id?: any): void
 
-export { any, onceRun, promiseOnPending, runInterval }
+export { onceRun, promiseOnPending, runInterval, singletonObj }

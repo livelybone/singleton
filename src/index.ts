@@ -27,7 +27,7 @@ const ids = new Map()
  *
  *       Return a singleton of any object(such as Promise, Function, Object...) corresponding to the id
  * */
-export function any<T = any>(id: ID, defaultValue: any): T {
+export function singletonObj<T = any>(id: ID, defaultValue: any): T {
   const k = `singleton-any-${id || 'default'}`
   if (!ids.has(k)) {
     ids.set(
