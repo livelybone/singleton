@@ -5,6 +5,8 @@
  * */
 type ID = string | number
 
+type Fn<T = any> = () => T
+
 interface PromiseOnPendingOptions {
   id?: ID
 
@@ -82,7 +84,7 @@ export default class Singleton {
    *       make sure only one timer for the same id is running,
    *       and returns a function to clear the timer so it can be terminated at any time
    * */
-  static runInterval(id: ID, createFn: Function): () => void {
+  static runInterval(id: ID, createFn: Fn): () => void {
     const k = `timer-${id || 'default'}`
     if (Singleton.ids.has(k)) {
       // clear old interval
@@ -101,7 +103,7 @@ export default class Singleton {
    *
    *       Ensure that the incoming function runs only once during the run time of the program
    * */
-  static onceRun(fn: Function, id: any = ''): void {
+  static onceRun(fn: Fn, id: any = ''): void {
     const k = id ? `once-run-${id}` : fn
     if (!Singleton.ids.has(k)) {
       Singleton.ids.set(k, fn())

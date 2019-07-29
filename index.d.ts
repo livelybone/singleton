@@ -1,4 +1,5 @@
 declare type ID = string | number
+declare type Fn<T = any> = () => T
 
 interface PromiseOnPendingOptions {
   id?: ID
@@ -47,14 +48,14 @@ declare class Singleton {
    *       make sure only one timer for the same id is running,
    *       and returns a function to clear the timer so it can be terminated at any time
    * */
-  static runInterval(id: ID, createFn: Function): () => void
+  static runInterval(id: ID, createFn: Fn): () => void
 
   /**
    * @desc 保证传入的函数在程序的运行期间只运行一次
    *
    *       Ensure that the incoming function runs only once during the run time of the program
    * */
-  static onceRun(fn: Function, id?: any): void
+  static onceRun(fn: Fn, id?: any): void
 }
 
 export default Singleton
