@@ -20,8 +20,7 @@
   },
   "keywords": [
     "singleton",
-    "promise",
-    "promise forever",
+    "promise on pending(can help to reduce redundant ajax request)",
     "function run once",
     "run setInterval",
     "singleton object"
@@ -34,6 +33,7 @@
   "homepage": "https://github.com/livelybone/singleton#readme",
   "devDependencies": {
     "@babel/core": "^7.5.0",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-transform-runtime": "^7.5.0",
     "@babel/preset-env": "^7.5.0",
     "@babel/preset-typescript": "^7.3.3",
