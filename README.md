@@ -38,7 +38,6 @@ Use in html, see what your can use in [CDN: unpkg](https://unpkg.com/@livelybone
 
 ```typescript
 declare type Fn<T = any> = () => T
-
 /**
  * 每个单例的 id
  *
@@ -48,7 +47,6 @@ declare type ID = string | number
 
 interface PromiseOnPendingOptions {
   id?: ID
-
   /**
    * 用于延迟 Promise 实例删除，
    * 如果为 undefined，则在 promise 状态改变之后立即删除
@@ -64,7 +62,7 @@ interface PromiseOnPendingOptions {
  *
  *       Return a singleton of any object(such as Promise, Function, Object...) corresponding to the id
  * */
-declare function singletonObj<T = any>(id: ID, defaultValue: any): T
+declare function singletonObj<T = {}>(id: ID, defaultValue?: () => T): T
 
 /**
  * @desc 保证一个 id 对应的 promise 在同一时间只存在一个，
