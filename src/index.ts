@@ -27,13 +27,10 @@ const ids = new Map()
  *
  *       Return a singleton of any object(such as Promise, Function, Object...) corresponding to the id
  * */
-export function singletonObj<T = any>(id: ID, defaultValue: any): T {
+export function singletonObj<T = {}>(id: ID, defaultValue?: () => T): T {
   const k = `singleton-any-${id || 'default'}`
   if (!ids.has(k)) {
-    ids.set(
-      k,
-      typeof defaultValue === 'function' ? defaultValue() : defaultValue || {},
-    )
+    ids.set(k, defaultValue ? defaultValue() : {})
   }
   return ids.get(k)
 }
