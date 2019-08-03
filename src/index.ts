@@ -56,7 +56,7 @@ export function promiseOnPending<T = any>(
 
   const del1 = () => {
     if (delayTime === undefined) del()
-    else setTimeout(() => del, delayTime)
+    else setTimeout(del, delayTime)
     return true
   }
 
