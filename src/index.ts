@@ -16,8 +16,17 @@ interface PromiseOnPendingOptions {
    *
    * Used to delay the deletion of Promise instance,
    * if it is undefined, the promise will be deleted immediately after the state changed
+   *
+   * This option will be deprecated in next version
    * */
   delayTime?: number
+  /**
+   * 同 delayTime
+   * 推荐使用这个属性
+   *
+   * As same as delayTime
+   * */
+  cacheTime?: number
 }
 
 const ids = new Map()
@@ -27,7 +36,7 @@ const ids = new Map()
  *
  *       Return a singleton of any object(such as Promise, Function, Object...) corresponding to the id
  * */
-export function singletonObj<T = {}>(id: ID, defaultValue?: () => T): T {
+export function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T {
   const k = `singleton-any-${id || 'default'}`
   if (!ids.has(k)) {
     ids.set(k, defaultValue ? defaultValue() : {})
@@ -45,18 +54,19 @@ export function singletonObj<T = {}>(id: ID, defaultValue?: () => T): T {
  *       during the period of promise pending.
  *       This method can be used to reduce redundant requests at the same time
  * */
-export function promiseOnPending<T = any>(
+export function promiseOnPending<T extends any>(
   proFn: () => Promise<T>,
   options: PromiseOnPendingOptions,
 ): Promise<T> {
-  const { id, delayTime } = options
+  const { id } = options
+  const cacheTime = options.cacheTime || options.delayTime
   const k = id ? `promise-${id}` : proFn
 
   const del = () => ids.delete(k)
 
   const del1 = () => {
-    if (delayTime === undefined) del()
-    else setTimeout(() => del, delayTime)
+    if (cacheTime === undefined) del()
+    else setTimeout(() => del, cacheTime)
     return true
   }
 
@@ -97,7 +107,7 @@ export function runInterval(id: ID, createFn: Fn): () => void {
  *
  *       Ensure that the incoming function runs only once during the run time of the program
  * */
-export function onceRun(fn: Fn, id: any = ''): void {
+export function onceRun(fn: Fn, id?: any): void {
   const k = id ? `once-run-${id}` : fn
   if (!ids.has(k)) {
     ids.set(k, fn())

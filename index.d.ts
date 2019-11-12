@@ -14,8 +14,17 @@ interface PromiseOnPendingOptions {
    *
    * Used to delay the deletion of Promise instance,
    * if it is undefined, the promise will be deleted immediately after the state changed
+   *
+   * This option will be deprecated in next version
    * */
   delayTime?: number
+  /**
+   * 同 delayTime
+   * 推荐使用这个属性
+   *
+   * As same as delayTime
+   * */
+  cacheTime?: number
 }
 
 /**
@@ -23,7 +32,7 @@ interface PromiseOnPendingOptions {
  *
  *       Return a singleton of any object(such as Promise, Function, Object...) corresponding to the id
  * */
-declare function singletonObj<T = {}>(id: ID, defaultValue?: () => T): T
+declare function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T
 
 /**
  * @desc 保证一个 id 对应的 promise 在同一时间只存在一个，
@@ -35,7 +44,7 @@ declare function singletonObj<T = {}>(id: ID, defaultValue?: () => T): T
  *       during the period of promise pending.
  *       This method can be used to reduce redundant requests at the same time
  * */
-declare function promiseOnPending<T = any>(
+declare function promiseOnPending<T extends any>(
   proFn: () => Promise<T>,
   options: PromiseOnPendingOptions,
 ): Promise<T>
