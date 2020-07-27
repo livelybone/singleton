@@ -54,10 +54,10 @@ export function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T {
  *       during the period of promise pending.
  *       This method can be used to reduce redundant requests at the same time
  * */
-export function promiseOnPending<T extends any>(
-  proFn: () => PromiseLike<T>,
+export function promiseOnPending<P extends PromiseLike<any>>(
+  proFn: () => P,
   options: PromiseOnPendingOptions,
-): Promise<T> {
+): P {
   const { id } = options
   const cacheTime = options.cacheTime || options.delayTime
   const k = id ? `promise-${id}` : proFn

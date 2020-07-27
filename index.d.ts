@@ -44,10 +44,10 @@ declare function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T
  *       during the period of promise pending.
  *       This method can be used to reduce redundant requests at the same time
  * */
-declare function promiseOnPending<T extends any>(
-  proFn: () => PromiseLike<T>,
+declare function promiseOnPending<P extends PromiseLike<any>>(
+  proFn: () => P,
   options: PromiseOnPendingOptions,
-): Promise<T>
+): P
 
 /**
  * @desc 封装 setInterval 函数，
@@ -58,6 +58,7 @@ declare function promiseOnPending<T extends any>(
  *       make sure only one timer for the same id is running,
  *       and returns a function to clear the timer so it can be terminated at any time
  * */
+
 declare function runInterval(id: ID, createFn: Fn): () => void
 
 /**
