@@ -45,7 +45,7 @@ declare function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T
  *       This method can be used to reduce redundant requests at the same time
  * */
 declare function promiseOnPending<T extends any>(
-  proFn: () => Promise<T>,
+  proFn: () => PromiseLike<T>,
   options: PromiseOnPendingOptions,
 ): Promise<T>
 

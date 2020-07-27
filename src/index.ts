@@ -55,7 +55,7 @@ export function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T {
  *       This method can be used to reduce redundant requests at the same time
  * */
 export function promiseOnPending<T extends any>(
-  proFn: () => Promise<T>,
+  proFn: () => PromiseLike<T>,
   options: PromiseOnPendingOptions,
 ): Promise<T> {
   const { id } = options
@@ -73,7 +73,10 @@ export function promiseOnPending<T extends any>(
   if (!ids.has(k)) {
     ids.set(
       k,
-      proFn().then(res => del1() && res, e => Promise.reject(del1() && e)),
+      proFn().then(
+        res => del1() && res,
+        e => Promise.reject(del1() && e),
+      ),
     )
   }
   return ids.get(k)
