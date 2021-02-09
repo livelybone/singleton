@@ -6,7 +6,7 @@ declare type Fn<T = any> = () => T
  * */
 declare type ID = string | number
 
-interface PromiseOnPendingOptions {
+export interface PromiseOnPendingOptions {
   id?: ID
   /**
    * 用于延迟 Promise 实例删除，
@@ -58,7 +58,6 @@ declare function promiseOnPending<P extends PromiseLike<any>>(
  *       make sure only one timer for the same id is running,
  *       and returns a function to clear the timer so it can be terminated at any time
  * */
-
 declare function runInterval(id: ID, createFn: Fn): () => void
 
 /**

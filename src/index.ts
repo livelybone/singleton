@@ -7,7 +7,7 @@ type Fn<T = any> = () => T
  * */
 type ID = string | number
 
-interface PromiseOnPendingOptions {
+export interface PromiseOnPendingOptions {
   id?: ID
 
   /**
@@ -29,7 +29,16 @@ interface PromiseOnPendingOptions {
   cacheTime?: number
 }
 
-const ids = new Map()
+function getIdsMap() {
+  const $global: any = typeof window !== 'undefined' ? window : global
+  if (
+    !$global.$$SingletonIdsMap ||
+    !($global.$$SingletonIdsMap instanceof Map)
+  ) {
+    $global.$$SingletonIdsMap = new Map()
+  }
+  return $global.$$SingletonIdsMap
+}
 
 /**
  * @desc 返回 id 对应的一个对象
@@ -37,6 +46,7 @@ const ids = new Map()
  *       Return a singleton of any object(such as Promise, Function, Object...) corresponding to the id
  * */
 export function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T {
+  const ids = getIdsMap()
   const k = `singleton-any-${id || 'default'}`
   if (!ids.has(k)) {
     ids.set(k, defaultValue ? defaultValue() : {})
@@ -58,6 +68,7 @@ export function promiseOnPending<P extends PromiseLike<any>>(
   proFn: () => P,
   options: PromiseOnPendingOptions,
 ): P {
+  const ids = getIdsMap()
   const { id } = options
   const cacheTime = options.cacheTime || options.delayTime
   const k = id ? `promise-${id}` : proFn
@@ -92,6 +103,7 @@ export function promiseOnPending<P extends PromiseLike<any>>(
  *       and returns a function to clear the timer so it can be terminated at any time
  * */
 export function runInterval(id: ID, createFn: Fn): () => void {
+  const ids = getIdsMap()
   const k = `timer-${id || 'default'}`
   if (ids.has(k)) {
     // clear old interval
@@ -111,6 +123,7 @@ export function runInterval(id: ID, createFn: Fn): () => void {
  *       Ensure that the incoming function runs only once during the run time of the program
  * */
 export function onceRun(fn: Fn, id?: any): void {
+  const ids = getIdsMap()
   const k = id ? `once-run-${id}` : fn
   if (!ids.has(k)) {
     ids.set(k, fn())
