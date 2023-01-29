@@ -41,9 +41,10 @@ function getIdsMap() {
 }
 
 /**
- * @desc 返回 id 对应的一个对象
+ * @deprecated 这个方法使用多了会导致内存泄漏，建议使用 singleton 方法代替
+ * @desc 返回 id 对应的一个单例对象
  *
- *       Return a singleton of any object(such as Promise, Function, Object...) corresponding to the id
+ *       Return a singleton of an object(such as Promise, Function, Object...) corresponding to the id.
  * */
 export function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T {
   const ids = getIdsMap()
@@ -52,6 +53,24 @@ export function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T {
     ids.set(k, defaultValue ? defaultValue() : {})
   }
   return ids.get(k)
+}
+
+/**
+ * @desc 返回 id 对应的一个单例对象，这个方法应当配合返回的 delete 方法一起使用，否则使用多了会导致内存泄漏
+ *
+ *       Return a singleton of an object(such as Promise, Function, Object...) corresponding to the id.
+ *       This method will cause OOM if it's used too much without calling `delete`.
+ * */
+export function singleton<T extends any>(
+  id: ID,
+  defaultValue?: () => T,
+): { value: T; delete(): void } {
+  const ids = getIdsMap()
+  const k = `singleton-any-${id || 'default'}`
+  if (!ids.has(k)) {
+    ids.set(k, defaultValue ? defaultValue() : {})
+  }
+  return { value: ids.get(k), delete: () => ids.delete(id) }
 }
 
 /**

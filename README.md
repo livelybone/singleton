@@ -1,4 +1,5 @@
 # @livelybone/singleton
+
 [![NPM Version](http://img.shields.io/npm/v/@livelybone/singleton.svg?style=flat-square)](https://www.npmjs.com/package/@livelybone/singleton)
 [![Download Month](http://img.shields.io/npm/dm/@livelybone/singleton.svg?style=flat-square)](https://www.npmjs.com/package/@livelybone/singleton)
 ![gzip with dependencies: 1kb](https://img.shields.io/badge/gzip--with--dependencies-1kb-brightgreen.svg "gzip with dependencies: 1kb")
@@ -10,25 +11,31 @@
 A util of singleton wrapping
 
 ## repository
+
 https://github.com/livelybone/singleton.git
 
 ## Demo
+
 https://github.com/livelybone/singleton#readme
 
 ## Installation
+
 ```bash
 npm i -S @livelybone/singleton
 ```
 
 ## Global name
+
 `Singleton`
 
 ## Usage
+
 ```js
 import * as Singleton from '@livelybone/singleton'
 ```
 
 Use in html, see what your can use in [CDN: unpkg](https://unpkg.com/@livelybone/singleton/lib/umd/)
+
 ```html
 <-- use what you want -->
 <script src="https://unpkg.com/@livelybone/singleton/lib/umd/<--module-->.js"></script>
@@ -45,7 +52,7 @@ declare type Fn<T = any> = () => T
  * */
 declare type ID = string | number
 
-interface PromiseOnPendingOptions {
+export interface PromiseOnPendingOptions {
   id?: ID
   /**
    * 用于延迟 Promise 实例删除，
@@ -53,16 +60,40 @@ interface PromiseOnPendingOptions {
    *
    * Used to delay the deletion of Promise instance,
    * if it is undefined, the promise will be deleted immediately after the state changed
+   *
+   * This option will be deprecated in next version
    * */
   delayTime?: number
+  /**
+   * 同 delayTime
+   * 推荐使用这个属性
+   *
+   * As same as delayTime
+   * */
+  cacheTime?: number
 }
 
 /**
- * @desc 返回 id 对应的一个对象
+ * @deprecated 这个方法使用多了会导致内存泄漏，建议使用 singleton 方法代替
+ * @desc 返回 id 对应的一个单例对象
  *
- *       Return a singleton of any object(such as Promise, Function, Object...) corresponding to the id
+ *       Return a singleton of an object(such as Promise, Function, Object...) corresponding to the id.
  * */
-declare function singletonObj<T = {}>(id: ID, defaultValue?: () => T): T
+declare function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T
+
+/**
+ * @desc 返回 id 对应的一个单例对象，这个方法应当配合返回的 delete 方法一起使用，否则使用多了会导致内存泄漏
+ *
+ *       Return a singleton of an object(such as Promise, Function, Object...) corresponding to the id.
+ *       This method will cause OOM if it's used too much without calling `delete`.
+ * */
+declare function singleton<T extends any>(
+  id: ID,
+  defaultValue?: () => T,
+): {
+  value: T
+  delete(): void
+}
 
 /**
  * @desc 保证一个 id 对应的 promise 在同一时间只存在一个，
@@ -74,10 +105,10 @@ declare function singletonObj<T = {}>(id: ID, defaultValue?: () => T): T
  *       during the period of promise pending.
  *       This method can be used to reduce redundant requests at the same time
  * */
-declare function promiseOnPending<T = any>(
-  proFn: () => Promise<T>,
+declare function promiseOnPending<P extends PromiseLike<any>>(
+  proFn: () => P,
   options: PromiseOnPendingOptions,
-): Promise<T>
+): P
 
 /**
  * @desc 封装 setInterval 函数，
@@ -97,5 +128,5 @@ declare function runInterval(id: ID, createFn: Fn): () => void
  * */
 declare function onceRun(fn: Fn, id?: any): void
 
-export { onceRun, promiseOnPending, runInterval, singletonObj }
+export { onceRun, promiseOnPending, runInterval, singleton, singletonObj }
 ```
