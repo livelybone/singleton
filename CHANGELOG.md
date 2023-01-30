@@ -1,9 +1,10 @@
-# 1.3.0 (2023-01-29)
+## 1.3.1 (2023-01-30)
 
 
 ### Bug Fixes
 
 * **promiseOnPending:** Update ([32d73d6](https://github.com/livelybone/singleton/commit/32d73d62bd093446148c018cdc8cfa71dcd81e94))
+* singleton.delete ([17c92ef](https://github.com/livelybone/singleton/commit/17c92ef72e0dbe3d338f96a1cd68bb2f983e2b23))
 * type bug ([7b79ee4](https://github.com/livelybone/singleton/commit/7b79ee4d3d08a7e17ac8da79de139b49b5287b01))
 
 
