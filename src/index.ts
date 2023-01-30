@@ -70,7 +70,7 @@ export function singleton<T extends any>(
   if (!ids.has(k)) {
     ids.set(k, defaultValue ? defaultValue() : {})
   }
-  return { value: ids.get(k), delete: () => ids.delete(id) }
+  return { value: ids.get(k), delete: () => ids.delete(k) }
 }
 
 /**
