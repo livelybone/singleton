@@ -64,7 +64,7 @@ export function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T {
 export function singleton<T extends Record<string, unknown>>(
   id: ID,
   defaultValue?: () => T,
-): { value: T; delete(): void; update(action: T | ((v: T) => T)): T } {
+): { value: T; delete(): void; update(action: T | ((pre: T) => T)): T } {
   const ids = getIdsMap()
   const k = `singleton-any-${id || 'default'}`
   if (!ids.has(k)) {

@@ -44,7 +44,7 @@ declare function singleton<T extends Record<string, unknown>>(
 ): {
   value: T
   delete(): void
-  update(action: T | ((v: T) => T)): T
+  update(action: T | ((pre: T) => T)): T
 }
 /**
  * @desc 保证一个 id 对应的 promise 在同一时间只存在一个，
