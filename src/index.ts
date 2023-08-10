@@ -61,16 +61,23 @@ export function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T {
  *       Return a singleton of an object(such as Promise, Function, Object...) corresponding to the id.
  *       This method will cause OOM if it's used too much without calling `delete`.
  * */
-export function singleton<T extends any>(
+export function singleton<T extends Record<string, unknown>>(
   id: ID,
   defaultValue?: () => T,
-): { value: T; delete(): void } {
+): { value: T; delete(): void; update(action: T | ((v: T) => T)): void } {
   const ids = getIdsMap()
   const k = `singleton-any-${id || 'default'}`
   if (!ids.has(k)) {
     ids.set(k, defaultValue ? defaultValue() : {})
   }
-  return { value: ids.get(k), delete: () => ids.delete(k) }
+  return {
+    value: ids.get(k),
+    delete: () => ids.delete(k),
+    update: (action: T | ((v: T) => T)) => {
+      const v = typeof action === 'function' ? action(ids.get()) : action
+      ids.set(k, v)
+    },
+  }
 }
 
 /**

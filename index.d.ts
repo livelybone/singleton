@@ -5,8 +5,7 @@ declare type Fn<T = any> = () => T
  * The id of a singleton
  * */
 declare type ID = string | number
-
-export interface PromiseOnPendingOptions {
+interface PromiseOnPendingOptions {
   id?: ID
   /**
    * 用于延迟 Promise 实例删除，
@@ -26,7 +25,6 @@ export interface PromiseOnPendingOptions {
    * */
   cacheTime?: number
 }
-
 /**
  * @deprecated 这个方法使用多了会导致内存泄漏，建议使用 singleton 方法代替
  * @desc 返回 id 对应的一个单例对象
@@ -34,21 +32,20 @@ export interface PromiseOnPendingOptions {
  *       Return a singleton of an object(such as Promise, Function, Object...) corresponding to the id.
  * */
 declare function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T
-
 /**
  * @desc 返回 id 对应的一个单例对象，这个方法应当配合返回的 delete 方法一起使用，否则使用多了会导致内存泄漏
  *
  *       Return a singleton of an object(such as Promise, Function, Object...) corresponding to the id.
  *       This method will cause OOM if it's used too much without calling `delete`.
  * */
-declare function singleton<T extends any>(
+declare function singleton<T extends Record<string, unknown>>(
   id: ID,
   defaultValue?: () => T,
 ): {
   value: T
   delete(): void
+  update(action: T | ((v: T) => T)): void
 }
-
 /**
  * @desc 保证一个 id 对应的 promise 在同一时间只存在一个，
  *       并且生成 promise 的函数在 promise pending 状态的时间段内只执行一次，
@@ -63,7 +60,6 @@ declare function promiseOnPending<P extends PromiseLike<any>>(
   proFn: () => P,
   options: PromiseOnPendingOptions,
 ): P
-
 /**
  * @desc 封装 setInterval 函数，
  *       保证同一个 id 对应的计时器只有一个在运行，
@@ -74,7 +70,6 @@ declare function promiseOnPending<P extends PromiseLike<any>>(
  *       and returns a function to clear the timer so it can be terminated at any time
  * */
 declare function runInterval(id: ID, createFn: Fn): () => void
-
 /**
  * @desc 保证传入的函数在程序的运行期间只运行一次
  *
@@ -82,4 +77,11 @@ declare function runInterval(id: ID, createFn: Fn): () => void
  * */
 declare function onceRun(fn: Fn, id?: any): void
 
-export { onceRun, promiseOnPending, runInterval, singleton, singletonObj }
+export {
+  PromiseOnPendingOptions,
+  onceRun,
+  promiseOnPending,
+  runInterval,
+  singleton,
+  singletonObj,
+}
