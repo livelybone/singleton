@@ -1,6 +1,6 @@
 {
   "name": "@livelybone/singleton",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "description": "A util of singleton wrapping",
   "main": "./lib/umd/index.js",
   "module": "./lib/es/index.js",

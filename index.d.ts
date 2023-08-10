@@ -38,7 +38,7 @@ declare function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T
  *       Return a singleton of an object(such as Promise, Function, Object...) corresponding to the id.
  *       This method will cause OOM if it's used too much without calling `delete`.
  * */
-declare function singleton<T extends Record<string, unknown>>(
+declare function singleton<T extends any>(
   id: ID,
   defaultValue?: () => T,
 ): {
