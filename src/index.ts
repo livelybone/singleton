@@ -73,7 +73,7 @@ export function singleton<T extends Record<string, unknown>>(
   return {
     value: ids.get(k),
     delete: () => ids.delete(k),
-    update: (action: T | ((v: T) => T)) => {
+    update: (action: T | ((pre: T) => T)) => {
       const v = typeof action === 'function' ? action(ids.get()) : action
       ids.set(k, v)
       return v
