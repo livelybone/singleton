@@ -1,3 +1,7 @@
+import { TransientMap } from './TransientMap'
+
+export { TransientMap } from './TransientMap'
+
 type Fn<T = any> = () => T
 
 /**
@@ -29,6 +33,17 @@ export interface PromiseOnPendingOptions {
   cacheTime?: number
 }
 
+function getSingletonsMap() : TransientMap<string,any> {
+  const $global: any = typeof window !== 'undefined' ? window : global
+  if (
+    !$global.$$SingletonIdsTransientMap ||
+    !($global.$$SingletonIdsTransientMap instanceof TransientMap)
+  ) {
+    $global.$$SingletonIdsTransientMap = new TransientMap()
+  }
+  return $global.$$SingletonIdsTransientMap
+}
+
 function getIdsMap() {
   const $global: any = typeof window !== 'undefined' ? window : global
   if (
@@ -39,15 +54,22 @@ function getIdsMap() {
   }
   return $global.$$SingletonIdsMap
 }
+/**
+ * @desc 设置单例对象缓存的最大数量
+ *
+ *       Config maxSize for all singleton instances
+ * */
+export function setSingletonMaxSize(maxSize: number) {
+  getSingletonsMap().maxSize = maxSize;
+}
 
 /**
- * @deprecated 这个方法使用多了会导致内存泄漏，建议使用 singleton 方法代替
  * @desc 返回 id 对应的一个单例对象
  *
  *       Return a singleton of an object(such as Promise, Function, Object...) corresponding to the id.
  * */
 export function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T {
-  const ids = getIdsMap()
+  const ids = getSingletonsMap()
   const k = `singleton-any-${id || 'default'}`
   if (!ids.has(k)) {
     ids.set(k, defaultValue ? defaultValue() : {})
@@ -56,16 +78,15 @@ export function singletonObj<T extends any>(id: ID, defaultValue?: () => T): T {
 }
 
 /**
- * @desc 返回 id 对应的一个单例对象，这个方法应当配合返回的 delete 方法一起使用，否则使用多了会导致内存泄漏
+ * @desc 返回 id 对应的一个单例对象 
  *
  *       Return a singleton of an object(such as Promise, Function, Object...) corresponding to the id.
- *       This method will cause OOM if it's used too much without calling `delete`.
  * */
 export function singleton<T extends any>(
   id: ID,
   defaultValue?: () => T,
 ): { value: T; delete(): void; update(action: T | ((pre: T) => T)): T } {
-  const ids = getIdsMap()
+  const ids = getSingletonsMap()
   const k = `singleton-any-${id || 'default'}`
   if (!ids.has(k)) {
     ids.set(k, defaultValue ? defaultValue() : {})
