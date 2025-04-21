@@ -75,7 +75,7 @@ export function singleton<T extends any>(
     delete: () => ids.delete(k),
     update: (action: T | ((pre: T) => T)) => {
       // @ts-ignore
-      const v = typeof action === 'function' ? action(ids.get()) : action
+      const v = typeof action === 'function' ? action(ids.get(k)) : action
       ids.set(k, v)
       return v
     },
