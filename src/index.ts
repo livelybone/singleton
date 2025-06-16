@@ -71,7 +71,9 @@ export function singleton<T extends any>(
     ids.set(k, defaultValue ? defaultValue() : {})
   }
   return {
-    value: ids.get(k),
+    get value() {
+      return ids.get(k)
+    },
     delete: () => ids.delete(k),
     update: (action: T | ((pre: T) => T)) => {
       // @ts-ignore
